@@ -138,6 +138,14 @@
 .contact .sec-desc { color: rgba(255,255,255,.82); }
 .contact .btn-primary { background: var(--on-brand); color: var(--brand); box-shadow: none; }
 .contact .btn-primary:hover { background: var(--brand-tint); }
+/* メールアプリが設定されていない PC でも問い合わせられるよう、アドレスを表示してコピー／Gmail を用意する */
+.mail { display: flex; flex-direction: column; gap: var(--sp-4); }
+.mail-address { font-family: var(--font-mono); font-weight: 700; font-size: clamp(16px, 2vw, 22px); color: var(--on-brand); text-decoration: none; border-bottom: 1px solid rgba(255,255,255,.35); align-self: flex-start; overflow-wrap: anywhere; }
+.mail-address:hover { border-bottom-color: var(--on-brand); }
+.mail-actions { display: flex; flex-wrap: wrap; gap: var(--sp-3); }
+.btn { border: none; cursor: pointer; }
+.btn-outline { color: var(--on-brand); background: transparent; box-shadow: inset 0 0 0 1px rgba(255,255,255,.5); }
+.btn-outline:hover { box-shadow: inset 0 0 0 1px var(--on-brand); background: rgba(255,255,255,.08); }
 
 /* ---------- 動画の拡大表示 ---------- */
 .video-modal { display: none; position: fixed; inset: 0; background: rgba(6, 22, 34, .86); z-index: 100; align-items: center; justify-content: center; padding: var(--sp-5); }
@@ -417,7 +425,13 @@
       <h2 class="sec-index"><span class="no">08</span>お問い合わせ</h2>
       <p class="sec-desc">ご質問・ご要望・不具合のご報告はメールにてお受けしています。（通常3営業日以内にご返信いたします）</p>
     </div>
-    <a class="btn btn-primary" href="mailto:support@smaregi-connector.com">メールで問い合わせる <span class="arrow">→</span></a>
+    <div class="mail">
+      <a class="mail-address" href="mailto:support@smaregi-connector.com">support@smaregi-connector.com</a>
+      <div class="mail-actions">
+        <button class="btn btn-primary" type="button" id="copyMail">アドレスをコピー</button>
+        <a class="btn btn-outline" href="https://mail.google.com/mail/?view=cm&amp;to=support@smaregi-connector.com" target="_blank" rel="noopener">Gmailで作成 <span class="arrow">→</span></a>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -449,6 +463,12 @@ function closeVideoModal(e){
   var m=document.getElementById('videoModal'), v=document.getElementById('modalVideo');
   m.classList.remove('open'); v.pause(); v.removeAttribute('src'); v.load();
 }
+document.getElementById('copyMail').addEventListener('click',function(){
+  var b=this, addr='support@smaregi-connector.com';
+  function done(ok){ b.textContent = ok ? 'コピーしました' : addr; setTimeout(function(){ b.textContent='アドレスをコピー'; }, 2000); }
+  if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(addr).then(function(){ done(true); }, function(){ done(false); }); }
+  else { done(false); }
+});
 document.addEventListener('keydown',function(e){
   if(e.key==='Escape') closeVideoModal();
   if((e.key==='Enter'||e.key===' ') && e.target.classList && e.target.classList.contains('window')){ e.preventDefault(); e.target.click(); }
