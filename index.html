@@ -138,7 +138,7 @@
 .contact .sec-desc { color: rgba(255,255,255,.82); }
 .contact .btn-primary { background: var(--on-brand); color: var(--brand); box-shadow: none; }
 .contact .btn-primary:hover { background: var(--brand-tint); }
-/* メールアプリが設定されていない PC でも問い合わせられるよう、アドレスを表示してコピー／Gmail を用意する */
+/* メールアプリが設定されていない PC でも問い合わせられるよう、アドレスを表示してコピーも用意する */
 .mail { display: flex; flex-direction: column; gap: var(--sp-4); }
 .mail-address { font-family: var(--font-mono); font-weight: 700; font-size: clamp(16px, 2vw, 22px); color: var(--on-brand); text-decoration: none; border-bottom: 1px solid rgba(255,255,255,.35); align-self: flex-start; overflow-wrap: anywhere; }
 .mail-address:hover { border-bottom-color: var(--on-brand); }
@@ -428,8 +428,8 @@
     <div class="mail">
       <a class="mail-address" href="mailto:support@smaregi-connector.com">support@smaregi-connector.com</a>
       <div class="mail-actions">
-        <button class="btn btn-primary" type="button" id="copyMail">アドレスをコピー</button>
-        <a class="btn btn-outline" href="https://mail.google.com/mail/?view=cm&amp;to=support@smaregi-connector.com" target="_blank" rel="noopener">Gmailで作成 <span class="arrow">→</span></a>
+        <a class="btn btn-primary" href="mailto:support@smaregi-connector.com">メールで問い合わせる <span class="arrow">→</span></a>
+        <button class="btn btn-outline" type="button" id="copyMail">アドレスをコピー</button>
       </div>
     </div>
   </div>
