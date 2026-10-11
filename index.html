@@ -10,307 +10,429 @@
 <meta name="description" content="スマレジの各種データをGoogleスプレッドシートに書き出し、スプレッドシートからスマレジに書き込む業務効率化ツール。Google Workspace アドオン。">
 <link rel="icon" type="image/png" href="icon.png">
 <link rel="apple-touch-icon" href="icon.png">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=M+PLUS+1p:wght@500;700;800&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="site.css">
 <style>
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: 'DM Sans', 'Noto Sans JP', sans-serif; color: #1a1d2e; background: #fff; line-height: 1.6; }
-.hero { background: linear-gradient(135deg, #0084cf 0%, #005fa3 100%); color: #fff; padding: 64px 24px 56px; text-align: center; }
-.hero-label { display: inline-block; background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.3); border-radius: 20px; font-size: 11px; font-weight: 700; letter-spacing: 1.5px; padding: 4px 14px; margin-bottom: 18px; text-transform: uppercase; }
-.hero h1 { font-size: clamp(22px, 4vw, 36px); font-weight: 700; line-height: 1.3; letter-spacing: -0.5px; margin-bottom: 14px; }
-.hero h1 em { font-style: normal; background: rgba(255,255,255,0.2); border-radius: 6px; padding: 0 6px; }
-.hero p { font-size: 15px; opacity: 0.9; max-width: 500px; margin: 0 auto; line-height: 1.75; }
-.section { padding: 52px 24px; max-width: 900px; margin: 0 auto; }
-.section-label { font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #0084cf; margin-bottom: 6px; }
-.section-title { font-size: clamp(18px, 3vw, 24px); font-weight: 700; letter-spacing: -0.3px; margin-bottom: 10px; }
-.section-desc { font-size: 14px; color: #6b7280; line-height: 1.75; margin-bottom: 32px; max-width: 580px; }
-.divider { border: none; border-top: 1px solid #e5e7eb; }
-.features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-.feature-card { background: #f8f9fc; border: 1.5px solid #e5e7eb; border-radius: 14px; padding: 22px 18px; }
-.feature-icon { font-size: 24px; margin-bottom: 12px; }
-.feature-card h3 { font-size: 14px; font-weight: 700; margin-bottom: 6px; }
-.feature-card p { font-size: 13px; color: #6b7280; line-height: 1.65; }
-.usecase { display: flex; flex-direction: column; gap: 32px; }
-.usecase-item { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start; }
-.usecase-head { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
-.usecase-num { flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; background: #0084cf; color: #fff; border-radius: 8px; font-size: 14px; font-weight: 700; }
-.usecase-text h3 { font-size: 16px; font-weight: 700; letter-spacing: -0.3px; }
-.usecase-text p { font-size: 14px; color: #6b7280; line-height: 1.75; }
-.usecase-video { position: relative; background: #f8f9fc; border: 1.5px solid #e5e7eb; border-radius: 14px; aspect-ratio: 16 / 9; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; color: #9ca3af; overflow: hidden; cursor: pointer; }
-.usecase-video .play-icon { font-size: 30px; }
-.usecase-video span { font-size: 12px; font-weight: 500; }
-.usecase-video video, .usecase-video img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
-.usecase-video .expand-hint { position: absolute; bottom: 10px; right: 10px; background: rgba(0,0,0,0.55); color: #fff; font-size: 11px; font-weight: 500; padding: 4px 9px; border-radius: 6px; display: flex; align-items: center; gap: 4px; pointer-events: none; }
-.video-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.82); z-index: 1000; align-items: center; justify-content: center; padding: 24px; }
+
+/* ---------- ヒーロー ---------- */
+.hero { position: relative; overflow: hidden; padding: var(--sp-9) 0 var(--sp-8); border-bottom: 1px solid var(--hairline-strong); background: linear-gradient(180deg, var(--brand-tint) 0%, var(--canvas) 78%); }
+/* スプレッドシートの罫線を背景に敷く（Snowflake の線模様に相当） */
+.hero::before { content: ''; position: absolute; inset: 0; background-image: linear-gradient(var(--brand-tint-2) 1px, transparent 1px), linear-gradient(90deg, var(--brand-tint-2) 1px, transparent 1px); background-size: calc(var(--cell) * 2.4) var(--cell); -webkit-mask-image: radial-gradient(ellipse 70% 80% at 70% 30%, #000 20%, transparent 75%); mask-image: radial-gradient(ellipse 70% 80% at 70% 30%, #000 20%, transparent 75%); pointer-events: none; }
+.hero .container { position: relative; display: grid; grid-template-columns: minmax(0, 6fr) minmax(0, 6fr); gap: var(--sp-7); align-items: center; }
+.eyebrow { display: inline-flex; align-items: center; gap: 10px; font-family: var(--font-mono); font-size: 12px; font-weight: 500; letter-spacing: .04em; color: var(--brand); margin-bottom: var(--sp-5); }
+.eyebrow::before { content: ''; width: 10px; height: 10px; background: var(--brand); }
+.hero h1 { font-family: var(--font-display); font-weight: 800; font-size: var(--fs-hero); line-height: 1.22; letter-spacing: -.02em; margin-bottom: var(--sp-5); text-wrap: balance; }
+.hero h1 .mark { color: var(--brand); white-space: nowrap; }
+.hero .lead { color: var(--ink-2); max-width: 30em; margin-bottom: var(--sp-6); text-wrap: pretty; }
+.hero-actions { display: flex; flex-wrap: wrap; gap: var(--sp-3); }
+
+/* 実際の動作動画をアプリの窓枠に入れて主役にする（Stripe の製品画面合成に相当） */
+.stage { position: relative; }
+.stage .cells { position: absolute; display: grid; grid-template-columns: repeat(3, 28px); gap: 4px; }
+.stage .cells i { display: block; width: 28px; height: 28px; background: var(--ink); opacity: .08; }
+.stage .cells i.on { background: var(--brand); opacity: 1; }
+.stage .cells.c1 { top: -46px; right: 24px; }
+.stage .cells.c2 { bottom: -38px; left: -30px; }
+.window { position: relative; background: var(--canvas); border-radius: var(--r-lg); box-shadow: var(--shadow-2); overflow: hidden; border: 1px solid var(--hairline); cursor: zoom-in; }
+.window-bar { display: flex; align-items: center; gap: 6px; height: 34px; padding: 0 var(--sp-3); background: var(--canvas-soft); border-bottom: 1px solid var(--hairline); }
+.window-bar i { width: 10px; height: 10px; border-radius: 50%; background: var(--hairline-strong); }
+.window-bar span { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; margin-left: var(--sp-3); font-family: var(--font-mono); font-size: var(--fs-micro); color: var(--ink-mute); }
+.window video { display: block; width: 100%; height: auto; }
+
+/* ---------- セクション共通 ---------- */
+.section { padding: var(--sp-9) 0; }
+.section + .section { border-top: 1px solid var(--hairline); }
+.section-soft { background: var(--canvas-soft); }
+.sec-head { margin-bottom: var(--sp-7); }
+/* 番号つきの見出し（例: 01 / 主な機能）を大きく、その下の一文を小さく */
+.sec-index { display: flex; align-items: baseline; flex-wrap: wrap; gap: 0 var(--sp-3); font-family: var(--font-display); font-weight: 800; font-size: var(--fs-h2); line-height: 1.3; letter-spacing: -.02em; }
+.sec-index .no { font-family: var(--font-mono); font-weight: 700; font-size: .62em; color: var(--brand); letter-spacing: 0; }
+.sec-index .no::after { content: ' /'; color: var(--hairline-strong); }
+.sec-title { font-family: var(--font-display); font-weight: 700; font-size: var(--fs-h3); line-height: 1.6; color: var(--ink-2); margin-top: var(--sp-3); text-wrap: balance; }
+.sec-desc { color: var(--ink-mute); margin-top: var(--sp-3); max-width: 36em; }
+.split { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: var(--sp-7); align-items: start; }
+.split .sec-head { position: sticky; top: 96px; margin-bottom: 0; }
+
+/* ---------- 主な機能: データの向きを図で見せる ---------- */
+.flows { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--sp-5); }
+.flow h3 { font-family: var(--font-display); font-weight: 800; font-size: 20px; margin: var(--sp-5) 0 var(--sp-2); letter-spacing: -.01em; }
+.flow p { color: var(--ink-2); font-size: 14px; }
+.flow-fig { position: relative; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: var(--sp-3); padding: var(--sp-6) var(--sp-5); border-radius: var(--r-lg); background-color: var(--canvas-soft); background-image: linear-gradient(var(--hairline) 1px, transparent 1px), linear-gradient(90deg, var(--hairline) 1px, transparent 1px); background-size: 24px 24px; border: 1px solid var(--hairline); overflow: hidden; }
+.node-app { font-family: var(--font-display); font-weight: 800; font-size: 13px; color: var(--on-brand); background: var(--ink); padding: 10px 12px; border-radius: var(--r-md); white-space: nowrap; }
+.node-sheet { display: grid; grid-template-columns: repeat(3, 14px); gap: 3px; padding: 6px; background: var(--canvas); border: 1px solid var(--hairline-strong); border-radius: var(--r-sm); }
+.node-sheet i { width: 14px; height: 10px; background: var(--brand-tint-2); }
+.node-sheet i:nth-child(-n+3) { background: var(--brand); }
+.pipe { position: relative; height: 2px; background-image: linear-gradient(90deg, var(--brand) 50%, transparent 50%); background-size: 8px 2px; animation: dash 1s linear infinite; }
+.pipe::after { content: ''; position: absolute; right: -2px; top: -4px; border: 5px solid transparent; border-left: 7px solid var(--brand); border-right: none; }
+.pipe.rev { animation-direction: reverse; }
+.pipe.rev::after { right: auto; left: -2px; border-left: none; border-right: 7px solid var(--brand); }
+.pipe-label { position: absolute; left: 50%; bottom: 10px; transform: translateX(-50%); font-family: var(--font-mono); font-size: var(--fs-micro); font-weight: 700; color: var(--brand); white-space: nowrap; background: var(--canvas-soft); padding: 0 4px; }
+@keyframes dash { to { background-position: 8px 0; } }
+
+/* ---------- 活用方法: 左右交互 ---------- */
+.usecases { display: flex; flex-direction: column; gap: var(--sp-9); }
+.usecase { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--sp-7); align-items: center; }
+.usecase:nth-child(even) { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); }
+.usecase:nth-child(even) .usecase-text { order: 2; }
+.usecase-num { display: block; font-family: var(--font-mono); font-size: 56px; font-weight: 700; line-height: 1; color: var(--brand-tint-2); margin-bottom: var(--sp-4); letter-spacing: -.04em; }
+.usecase h3 { font-family: var(--font-display); font-weight: 800; font-size: 22px; line-height: 1.4; margin-bottom: var(--sp-3); letter-spacing: -.01em; }
+.usecase p { color: var(--ink-2); }
+.usecase .window { border-radius: var(--r-md); box-shadow: var(--shadow-1); transition: box-shadow .3s var(--ease), transform .3s var(--ease); }
+.usecase .window:hover { box-shadow: var(--shadow-2); transform: translateY(-2px); }
+.usecase .window video { aspect-ratio: 16 / 9; object-fit: cover; object-position: top; }
+
+/* ---------- 使い方 ---------- */
+.steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); counter-reset: step; border-top: 2px solid var(--ink); }
+.step { padding: var(--sp-5) var(--sp-5) 0 0; position: relative; }
+.step + .step { padding-left: var(--sp-5); border-left: 1px solid var(--hairline); }
+.step .num { display: block; font-size: 13px; color: var(--brand); margin-bottom: var(--sp-4); }
+.step h3 { font-family: var(--font-display); font-weight: 700; font-size: var(--fs-h3); margin-bottom: var(--sp-2); }
+.step p { color: var(--ink-2); font-size: 14px; }
+
+/* ---------- ご利用要件 ---------- */
+.req { display: grid; grid-template-columns: 180px minmax(0, 1fr); border-top: 2px solid var(--ink); }
+.req dt, .req dd { padding: var(--sp-4) 0; border-bottom: 1px solid var(--hairline); }
+.req dt { font-family: var(--font-display); font-weight: 700; }
+.req dd { color: var(--ink-2); }
+
+/* ---------- 料金: スプレッドシートの比較表 ---------- */
+.price-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.price-table th, .price-table td { text-align: left; padding: 18px var(--sp-4); border-bottom: 1px solid var(--hairline); vertical-align: middle; }
+.price-table thead th { font-family: var(--font-mono); font-size: var(--fs-micro); font-weight: 500; letter-spacing: .06em; color: var(--ink-mute); border-bottom: 2px solid var(--ink); padding-top: 0; }
+.price-table tbody tr { transition: background .2s; }
+.price-table tbody tr:hover { background: var(--canvas-soft); }
+.plan-name { font-family: var(--font-display); font-weight: 800; font-size: 17px; white-space: nowrap; }
+.plan-price { font-family: var(--font-mono); font-variant-numeric: tabular-nums; font-weight: 700; font-size: 20px; white-space: nowrap; letter-spacing: -.02em; }
+.plan-price small { font-family: var(--font-body); font-size: 12px; font-weight: 400; color: var(--ink-mute); margin-left: 2px; }
+.plan-price.quote { font-family: var(--font-display); font-size: 16px; letter-spacing: 0; }
+.price-table td.limit { color: var(--ink-mute); }
+.price-table td.free { color: var(--ink); font-weight: 500; }
+.price-table .note { color: var(--ink-mute); font-size: 13px; }
+/* おすすめ行は濃紺で反転（Stripe の featured tier に相当） */
+.price-table tr.featured, .price-table tr.featured:hover { background: var(--ink); color: var(--on-brand); }
+.price-table tr.featured td { border-bottom-color: var(--ink); }
+.price-table tr.featured td.free, .price-table tr.featured .plan-price { color: var(--on-brand); }
+.price-table tr.featured .note, .price-table tr.featured .plan-price small { color: var(--on-dark-mute); }
+.tag { display: inline-block; margin-left: var(--sp-2); font-family: var(--font-mono); font-size: 10px; font-weight: 700; letter-spacing: .06em; padding: 3px 6px; border-radius: var(--r-sm); background: var(--brand); color: var(--on-brand); vertical-align: 3px; }
+.pricing-note { margin-top: var(--sp-5); font-size: 12px; color: var(--ink-mute); line-height: 1.9; }
+
+/* ---------- 解約・返金 ---------- */
+.policy { list-style: none; counter-reset: p; border-top: 2px solid var(--ink); }
+.policy li { counter-increment: p; display: grid; grid-template-columns: 56px minmax(0, 1fr); gap: var(--sp-5); padding: var(--sp-4) 0; border-bottom: 1px solid var(--hairline); color: var(--ink-2); }
+.policy li::before { content: counter(p, decimal-leading-zero); font-family: var(--font-mono); font-size: 13px; color: var(--brand); padding-top: 2px; }
+
+/* ---------- FAQ: 質問と答えを左右に ---------- */
+.faq { border-top: 2px solid var(--ink); }
+.faq-item { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--sp-6); padding: var(--sp-5) 0; border-bottom: 1px solid var(--hairline); }
+.faq-q { font-family: var(--font-display); font-weight: 700; }
+.faq-a { color: var(--ink-2); }
+
+/* ---------- お問い合わせ ---------- */
+.contact { position: relative; overflow: hidden; background: var(--brand); color: var(--on-brand); padding: var(--sp-9) 0; }
+.contact::before { content: ''; position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,.08) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.08) 1px, transparent 1px); background-size: calc(var(--cell) * 2.4) var(--cell); -webkit-mask-image: linear-gradient(90deg, transparent 10%, #000 90%); mask-image: linear-gradient(90deg, transparent 10%, #000 90%); }
+.contact .container { position: relative; display: flex; align-items: flex-end; justify-content: space-between; gap: var(--sp-6); flex-wrap: wrap; }
+.contact .sec-index .no { color: var(--on-dark-mute); }
+.contact .sec-index .no::after { color: rgba(255,255,255,.3); }
+.contact .sec-desc { color: rgba(255,255,255,.82); }
+.contact .btn-primary { background: var(--on-brand); color: var(--brand); box-shadow: none; }
+.contact .btn-primary:hover { background: var(--brand-tint); }
+
+/* ---------- 動画の拡大表示 ---------- */
+.video-modal { display: none; position: fixed; inset: 0; background: rgba(6, 22, 34, .86); z-index: 100; align-items: center; justify-content: center; padding: var(--sp-5); }
 .video-modal.open { display: flex; }
-.video-modal video { max-width: min(1100px, 95vw); max-height: 90vh; width: auto; height: auto; border-radius: 10px; box-shadow: 0 10px 40px rgba(0,0,0,0.5); }
-.video-modal-close { position: absolute; top: 16px; right: 22px; background: none; border: none; color: #fff; font-size: 34px; line-height: 1; cursor: pointer; }
-.flow { display: flex; gap: 8px; align-items: flex-start; flex-wrap: wrap; }
-.flow-step { flex: 1; min-width: 140px; text-align: center; position: relative; padding: 0 8px; }
-.flow-step:not(:last-child)::after { content: '→'; position: absolute; right: -8px; top: 14px; color: #0084cf; font-size: 16px; }
-.flow-num { width: 36px; height: 36px; background: #0084cf; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; margin: 0 auto 10px; }
-.flow-step h4 { font-size: 13px; font-weight: 700; margin-bottom: 4px; }
-.flow-step p { font-size: 12px; color: #6b7280; line-height: 1.5; }
-.requirements { background: #f8f9fc; border-radius: 14px; padding: 28px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
-.req-item h4 { font-size: 12px; font-weight: 700; letter-spacing: 0.5px; color: #0084cf; margin-bottom: 6px; }
-.req-item p { font-size: 13px; color: #374151; line-height: 1.65; }
-.plans-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 14px; }
-.plans-grid-bottom { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 14px; }
-.plan-card { background: #fff; border: 1.5px solid #e5e7eb; border-radius: 14px; padding: 22px 18px; transition: box-shadow 0.2s, transform 0.2s; }
-.plan-card:hover { box-shadow: 0 6px 24px rgba(0,0,0,0.07); transform: translateY(-2px); }
-.plan-card.featured { border-color: #0084cf; background: #f0f8ff; }
-.plan-card.enterprise { background: #1a1d2e; border-color: #1a1d2e; }
-.badge { display: inline-block; background: #0084cf; color: #fff; font-size: 10px; font-weight: 700; padding: 2px 10px; border-radius: 20px; margin-bottom: 10px; }
-.plan-name { font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: capitalize; color: #6b7280; margin-bottom: 4px; }
-.plan-card.featured .plan-name { color: #0084cf; }
-.plan-card.enterprise .plan-name { color: #94a3b8; }
-.plan-price { font-size: 28px; font-weight: 700; color: #1a1d2e; letter-spacing: -1px; line-height: 1.1; margin-bottom: 4px; }
-.plan-card.enterprise .plan-price { color: #fff; font-size: 20px; }
-.plan-price span { font-size: 13px; font-weight: 500; color: #9ca3af; }
-.plan-stores { font-size: 12px; color: #6b7280; margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px solid #e5e7eb; }
-.plan-card.enterprise .plan-stores { color: #94a3b8; border-bottom-color: #2d3148; }
-.plan-comment { font-size: 11px; color: #9ca3af; margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid #f0f0f0; line-height: 1.5; }
-.plan-card.enterprise .plan-comment { color: #64748b; border-bottom-color: #2d3148; }
-.plan-features { list-style: none; display: flex; flex-direction: column; gap: 6px; }
-.plan-features li { font-size: 12px; color: #374151; display: flex; align-items: flex-start; gap: 6px; line-height: 1.4; }
-.plan-card.enterprise .plan-features li { color: #cbd5e1; }
-.icon { flex-shrink: 0; width: 15px; height: 15px; border-radius: 50%; background: #e8f5e9; color: #22c55e; display: flex; align-items: center; justify-content: center; font-size: 9px; margin-top: 1px; }
-.icon.limit { background: #fff7ed; color: #f97316; }
-.plan-card.enterprise .icon { background: #2d3148; color: #60a5fa; }
-.pricing-note { font-size: 12px; color: #9ca3af; text-align: center; margin-top: 8px; }
-.cancel-box { background: #f0f9ff; border: 1.5px solid #bae6fd; border-radius: 14px; padding: 24px 28px; }
-.cancel-box h3 { font-size: 15px; font-weight: 700; color: #0084cf; margin-bottom: 14px; }
-.cancel-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
-.cancel-list li { font-size: 14px; color: #374151; line-height: 1.65; display: flex; gap: 8px; align-items: flex-start; }
-.cancel-list li::before { content: '✓'; flex-shrink: 0; color: #0084cf; font-weight: 700; margin-top: 1px; }
-.faq-item { border-bottom: 1px solid #e5e7eb; padding: 18px 0; }
-.faq-item:last-child { border-bottom: none; }
-.faq-q { font-size: 14px; font-weight: 700; color: #1a1d2e; margin-bottom: 7px; display: flex; gap: 10px; align-items: flex-start; }
-.faq-q::before { content: 'Q'; flex-shrink: 0; width: 20px; height: 20px; background: #0084cf; color: #fff; border-radius: 5px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; margin-top: 1px; }
-.faq-a { font-size: 13px; color: #374151; line-height: 1.7; padding-left: 30px; }
-.contact-card { background: #f8f9fc; border-radius: 14px; padding: 28px; display: flex; align-items: center; gap: 20px; }
-.contact-icon { font-size: 28px; flex-shrink: 0; }
-.contact-info h3 { font-size: 12px; font-weight: 700; color: #0084cf; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
-.contact-info a { font-size: 16px; font-weight: 700; color: #1a1d2e; text-decoration: none; }
-.contact-info a:hover { color: #0084cf; }
-.contact-info p { font-size: 12px; color: #6b7280; margin-top: 3px; }
-.site-footer { background: #f8f9fc; border-top: 1px solid #e5e7eb; padding: 28px 24px; text-align: center; color: #9ca3af; }
-.footer-nav { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 18px; margin-bottom: 12px; }
-.footer-nav a { color: #9ca3af; text-decoration: none; font-size: 11px; letter-spacing: 0.2px; }
-.footer-nav a:hover { color: #6b7280; text-decoration: underline; }
-.site-footer p { font-size: 11px; color: #c4c8d0; }
-@media (max-width: 640px) {
-  .features-grid, .requirements, .plans-grid { grid-template-columns: 1fr; }
-  .usecase-item { grid-template-columns: 1fr; gap: 14px; }
-  .plans-grid-bottom { grid-template-columns: repeat(2, 1fr); }
-  .flow-step:not(:last-child)::after { display: none; }
-  .contact-card { flex-direction: column; }
+.video-modal video { max-width: min(1100px, 95vw); max-height: 90vh; border-radius: var(--r-md); }
+.video-modal-close { position: absolute; top: var(--sp-4); right: var(--sp-5); background: none; border: none; color: var(--on-brand); font-size: 34px; line-height: 1; cursor: pointer; }
+
+/* ---------- 入場アニメーション ---------- */
+@keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+.hero-copy > * { animation: rise .7s var(--ease) both; }
+.hero-copy > :nth-child(2) { animation-delay: .08s; }
+.hero-copy > :nth-child(3) { animation-delay: .16s; }
+.hero-copy > :nth-child(4) { animation-delay: .24s; }
+.stage { animation: rise .9s .2s var(--ease) both; }
+
+/* ---------- スマホ ---------- */
+@media (max-width: 860px) {
+  .hero { padding-top: var(--sp-8); }
+  .hero .container, .split, .usecase, .usecase:nth-child(even) { grid-template-columns: 1fr; }
+  .usecase:nth-child(even) .usecase-text { order: 0; }
+  .split .sec-head { position: static; margin-bottom: var(--sp-6); }
+  .stage .cells { display: none; }
+  .usecases { gap: var(--sp-8); }
+  .steps, .flows { grid-template-columns: 1fr; }
+  .step, .step + .step { padding: var(--sp-5) 0; border-left: none; border-bottom: 1px solid var(--hairline); }
+  .faq-item { grid-template-columns: 1fr; gap: var(--sp-2); }
+  .req { grid-template-columns: 1fr; }
+  .req dt { border-bottom: none; padding-bottom: 0; }
+  .req dd { padding-top: var(--sp-1); }
+  /* 料金表は1プラン1ブロックに組み替える */
+  .price-table thead { display: none; }
+  .price-table, .price-table tbody, .price-table tr, .price-table td { display: block; width: 100%; }
+  .price-table tr { display: grid; grid-template-columns: 1fr auto; padding: var(--sp-4); border-bottom: 1px solid var(--hairline); }
+  .price-table td { padding: 2px 0; border: none; }
+  .price-table td[data-label] { grid-column: 1 / -1; display: flex; justify-content: space-between; gap: var(--sp-4); font-size: 13px; }
+  .price-table td[data-label]::before { content: attr(data-label); color: var(--ink-mute); }
+  .price-table tr.featured td[data-label]::before { color: var(--on-dark-mute); }
+  .price-table td.price-cell { text-align: right; }
+  .price-table td.note { grid-column: 1 / -1; padding-top: var(--sp-2); }
+  .contact .container { align-items: flex-start; }
 }
 </style>
 </head>
 <body>
 
-<div class="hero">
-  <img src="icon.png" alt="スマレジコネクター" style="width:72px;height:72px;margin:0 auto 18px;display:block;">
-  <div class="hero-label">Google Workspace アドオン</div>
-  <h1>スマレジの売上データを<br>Google<em>スプレッドシート</em>へワンクリックで</h1>
-  <p>スマレジコネクター for スプレッドシートは、スマレジの各種データをGoogleスプレッドシートに書き出し、Googleスプレッドシートからスマレジに書き込む業務効率化ツールです。</p>
-</div>
-
-<div class="section">
-  <div class="section-label">Features</div>
-  <div class="section-title">主な機能</div>
-  <div class="section-desc">手作業でのデータ転記をなくし、分析・レポート作成の時間を大幅に短縮します。</div>
-  <div class="features-grid">
-    <div class="feature-card"><div class="feature-icon">📥</div><h3>取引データの一括取得</h3><p>売上トランザクション・明細・支払情報を期間・店舗を指定してまとめて取得できます。</p></div>
-    <div class="feature-card"><div class="feature-icon">📦</div><h3>各種マスタの一括登録</h3><p>商品マスタ・部門マスタなどをスプレッドシートから一括登録できCSV作成をする必要がなくなります。</p></div>
-    <div class="feature-card"><div class="feature-icon">📅</div><h3>毎日データを自動取得</h3><p>一度取得した条件で毎日データを自動で取得できるのでレポート・帳票作成を効率化できます。</p></div>
+<header class="site-header">
+  <div class="container">
+    <a class="logo" href="#top"><img src="icon.png" alt="">スマレジコネクター</a>
+    <nav class="nav" aria-label="ページ内">
+      <a href="#features">機能</a>
+      <a href="#usecases">活用方法</a>
+      <a href="#pricing">料金</a>
+      <a href="#faq">よくあるご質問</a>
+    </nav>
+    <a class="btn btn-primary" href="#contact">お問い合わせ</a>
   </div>
-</div>
+</header>
 
-<hr class="divider">
+<main id="top">
 
-<div class="section">
-  <div class="section-label">Demo</div>
-  <div class="section-title">動作イメージ</div>
-  <div class="section-desc">Googleスプレッドシートのサイドバーから簡単に操作できます。</div>
-  <div style="text-align:center; background:#f8f9fc; border:1.5px solid #e5e7eb; border-radius:14px; padding:24px; overflow:hidden; cursor:pointer;" onclick="openVideoModal('demo.webm')">
-    <video src="demo.webm" autoplay loop muted playsinline style="max-width:100%; height:auto; border-radius:8px; box-shadow:0 4px 20px rgba(0,0,0,0.1);"></video>
-  </div>
-</div>
-
-<hr class="divider">
-
-<div class="section">
-  <div class="section-label">Use Cases</div>
-  <div class="section-title">便利な活用方法</div>
-  <div class="section-desc">CSVアップロードではできない操作も、スプレッドシートから一括で。</div>
-  <div class="usecase">
-    <div class="usecase-item">
-      <div class="usecase-text">
-        <div class="usecase-head"><div class="usecase-num">1</div><h3>データの自動取得</h3></div>
-        <p>毎日指定した時間に同じ条件で自動でデータ取得を行いシート更新します。</p>
-      </div>
-      <div class="usecase-video" onclick="openVideoModal('usecase1.webm')">
-        <video src="usecase1.webm" autoplay loop muted playsinline></video>
-        <span class="expand-hint">⤢ クリックで拡大</span>
+<section class="hero">
+  <div class="container">
+    <div class="hero-copy">
+      <span class="eyebrow">Google Workspace アドオン</span>
+      <h1><span class="ph">スマレジの売上データを</span><span class="ph"><span class="mark">スプレッドシート</span>へ</span><span class="ph">ワンクリックで</span></h1>
+      <p class="lead">スマレジの各種データをGoogleスプレッドシートに書き出し、Googleスプレッドシートからスマレジに書き込む業務効率化ツールです。</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="#pricing">料金プランを見る <span class="arrow">→</span></a>
+        <a class="btn btn-ghost" href="#how">使い方</a>
       </div>
     </div>
-    <div class="usecase-item">
-      <div class="usecase-text">
-        <div class="usecase-head"><div class="usecase-num">2</div><h3>親部門を一括登録</h3></div>
-        <p>部門CSVアップロード機能では登録できない親部門登録を、スプレッドシートから一括登録・更新できます。</p>
-      </div>
-      <div class="usecase-video" onclick="openVideoModal('usecase2.webm')">
-        <video src="usecase2.webm" autoplay loop muted playsinline></video>
-        <span class="expand-hint">⤢ クリックで拡大</span>
-      </div>
-    </div>
-    <div class="usecase-item">
-      <div class="usecase-text">
-        <div class="usecase-head"><div class="usecase-num">3</div><h3>店舗別の価格を一括登録</h3></div>
-        <p>CSVアップロードでは登録できない価格詳細（店舗別価格）を、スプレッドシートから一括登録できます。</p>
-      </div>
-      <div class="usecase-video" onclick="openVideoModal('usecase3.webm')">
-        <video src="usecase3.webm" autoplay loop muted playsinline></video>
-        <span class="expand-hint">⤢ クリックで拡大</span>
-      </div>
-    </div>
-    <div class="usecase-item">
-      <div class="usecase-text">
-        <div class="usecase-head"><div class="usecase-num">4</div><h3>アイコン画像・詳細画像を一括登録</h3></div>
-        <p>一括登録機能がない画像登録を、スプレッドシート経由で一括登録できます。</p>
-      </div>
-      <div class="usecase-video" onclick="openVideoModal('usecase4.webm')">
-        <video src="usecase4.webm" autoplay loop muted playsinline></video>
-        <span class="expand-hint">⤢ クリックで拡大</span>
+    <div class="stage">
+      <div class="cells c1" aria-hidden="true"><i></i><i></i><i class="on"></i><i></i><i class="on"></i><i></i></div>
+      <div class="cells c2" aria-hidden="true"><i class="on"></i><i></i><i></i><i class="on"></i><i></i><i></i></div>
+      <div class="window" onclick="openVideoModal('demo.webm')" role="button" tabindex="0" aria-label="動作イメージを拡大">
+        <div class="window-bar"><i></i><i></i><i></i><span>Google スプレッドシート — スマレジコネクター</span></div>
+        <video src="demo.webm" width="1920" height="970" autoplay loop muted playsinline></video>
       </div>
     </div>
   </div>
-</div>
+</section>
 
-<hr class="divider">
-
-<div class="section">
-  <div class="section-label">How it works</div>
-  <div class="section-title">使い方</div>
-  <div class="section-desc">3ステップで使い始められます。</div>
-  <div class="flow">
-    <div class="flow-step"><div class="flow-num">1</div><h4>アドオンをインストール</h4><p>Google Workspaceマーケットプレイスからインストール</p></div>
-    <div class="flow-step"><div class="flow-num">2</div><h4>スマレジと連携</h4><p>サイドバーからスマレジアカウントでOAuth認証</p></div>
-    <div class="flow-step"><div class="flow-num">3</div><h4>データを取得</h4><p>取得条件を選んでボタンを押すだけでシートにデータ出力</p></div>
-  </div>
-</div>
-
-<hr class="divider">
-
-<div class="section">
-  <div class="section-label">Requirements</div>
-  <div class="section-title">ご利用要件</div>
-  <div class="section-desc">本サービスのご利用には以下の環境・契約が必要です。</div>
-  <div class="requirements">
-    <div class="req-item"><h4>スマレジ</h4><p>スタンダードプラン以上のご契約が必要です。</p></div>
-    <div class="req-item"><h4>Googleアカウント</h4><p>Googleアカウントおよびスプレッドシートへのアクセス権が必要です。</p></div>
-    <div class="req-item"><h4>動作環境</h4><p>Google Chrome 最新版を推奨します。</p></div>
-  </div>
-</div>
-
-<hr class="divider">
-
-<div class="section" id="pricing">
-  <div class="section-label">Pricing</div>
-  <div class="section-title">料金プラン</div>
-  <div class="section-desc">スマレジの規模に合わせて選べる、シンプルな料金体系</div>
-  <div class="plans-grid">
-    <div class="plan-card">
-      <div class="plan-name">Free</div><div class="plan-price">¥0<span> /月</span></div>
-      <div class="plan-stores">店舗数無制限</div><div class="plan-comment">まずは無料でお試し</div>
-      <ul class="plan-features"><li><span class="icon limit">!</span>月10回まで実行可能</li><li><span class="icon limit">!</span>1回あたり100行まで入出力（登録系は10行）</li></ul>
+<section class="section" id="features">
+  <div class="container">
+    <div class="sec-head">
+      <h2 class="sec-index"><span class="no">01</span>主な機能</h2>
+      <p class="sec-title">手作業での転記を、なくす。</p>
     </div>
-    <div class="plan-card">
-      <div class="plan-name">Lite</div><div class="plan-price">¥980<span> /月</span></div>
-      <div class="plan-stores">1店舗まで</div><div class="plan-comment">日次・週次の定期確認に最適</div>
-      <ul class="plan-features"><li><span class="icon limit">!</span>月50回まで実行可能</li><li><span class="icon">✓</span>入出力行数 無制限</li></ul>
-    </div>
-    <div class="plan-card featured">
-      <div class="badge">おすすめ</div>
-      <div class="plan-name">Standard</div><div class="plan-price">¥2,980<span> /月</span></div>
-      <div class="plan-stores">1店舗まで</div><div class="plan-comment">月次レポート・分析に最適</div>
-      <ul class="plan-features"><li><span class="icon">✓</span>実行回数 無制限</li><li><span class="icon">✓</span>入出力行数 無制限</li></ul>
+    <div class="flows">
+      <div class="flow">
+        <div class="flow-fig" aria-hidden="true"><span class="node-app">スマレジ</span><span class="pipe"><span class="pipe-label">書き出し</span></span><span class="node-sheet"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span></div>
+        <h3>シートに書き出し</h3>
+        <p>取引・商品・在庫などのデータを、期間・店舗を指定してスプレッドシートにまとめて書き出せます。</p>
+      </div>
+      <div class="flow">
+        <div class="flow-fig" aria-hidden="true"><span class="node-app">スマレジ</span><span class="pipe rev"><span class="pipe-label">登録</span></span><span class="node-sheet"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span></div>
+        <h3>シートから登録</h3>
+        <p>商品・在庫・取引などをスプレッドシートから一括で登録・更新できます。CSVを作成する必要はありません。</p>
+      </div>
+      <div class="flow">
+        <div class="flow-fig" aria-hidden="true"><span class="node-app">スマレジ</span><span class="pipe"><span class="pipe-label">毎日 定時</span></span><span class="node-sheet"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span></div>
+        <h3>毎日定時書き出し</h3>
+        <p>一度書き出した条件で、毎日決まった時間に自動で書き出します。レポート・帳票作成を効率化できます。</p>
+      </div>
     </div>
   </div>
-  <div class="plans-grid-bottom">
-    <div class="plan-card">
-      <div class="plan-name">Pro</div><div class="plan-price">¥4,980<span> /月</span></div>
-      <div class="plan-stores">10店舗まで</div><div class="plan-comment">複数店舗を横断集計</div>
-      <ul class="plan-features"><li><span class="icon">✓</span>実行回数 無制限</li><li><span class="icon">✓</span>入出力行数 無制限</li></ul>
+</section>
+
+<section class="section section-soft" id="usecases">
+  <div class="container">
+    <div class="sec-head">
+      <h2 class="sec-index"><span class="no">02</span>便利な活用方法</h2>
+      <p class="sec-title">CSVアップロードではできない操作も、<wbr>スプレッドシートから一括で。</p>
     </div>
-    <div class="plan-card">
-      <div class="plan-name">Pro 50</div><div class="plan-price">¥19,800<span> /月</span></div>
-      <div class="plan-stores">50店舗まで</div><div class="plan-comment">中規模チェーン向け</div>
-      <ul class="plan-features"><li><span class="icon">✓</span>実行回数 無制限</li><li><span class="icon">✓</span>入出力行数 無制限</li></ul>
-    </div>
-    <div class="plan-card">
-      <div class="plan-name">Pro 100</div><div class="plan-price">¥29,800<span> /月</span></div>
-      <div class="plan-stores">100店舗まで</div><div class="plan-comment">大規模チェーン向け</div>
-      <ul class="plan-features"><li><span class="icon">✓</span>実行回数 無制限</li><li><span class="icon">✓</span>入出力行数 無制限</li></ul>
-    </div>
-    <div class="plan-card enterprise">
-      <div class="plan-name">Enterprise</div><div class="plan-price">個別見積もり</div>
-      <div class="plan-stores">101店舗以上</div><div class="plan-comment">大規模・特殊要件はお問い合わせください</div>
-      <ul class="plan-features"><li><span class="icon">✓</span>実行回数 無制限</li><li><span class="icon">✓</span>入出力行数 無制限</li></ul>
+    <div class="usecases">
+      <div class="usecase">
+        <div class="usecase-text"><span class="usecase-num">01</span><h3>データの自動取得</h3><p>毎日指定した時間に同じ条件で自動でデータ取得を行いシート更新します。</p></div>
+        <div class="window" onclick="openVideoModal('usecase1.webm')" role="button" tabindex="0" aria-label="データの自動取得の動画を拡大"><video src="usecase1.webm" autoplay loop muted playsinline></video></div>
+      </div>
+      <div class="usecase">
+        <div class="usecase-text"><span class="usecase-num">02</span><h3>親部門を一括登録</h3><p>部門CSVアップロード機能では登録できない親部門登録を、スプレッドシートから一括登録・更新できます。</p></div>
+        <div class="window" onclick="openVideoModal('usecase2.webm')" role="button" tabindex="0" aria-label="親部門を一括登録の動画を拡大"><video src="usecase2.webm" autoplay loop muted playsinline></video></div>
+      </div>
+      <div class="usecase">
+        <div class="usecase-text"><span class="usecase-num">03</span><h3>店舗別の価格を一括登録</h3><p>CSVアップロードでは登録できない価格詳細（店舗別価格）を、スプレッドシートから一括登録できます。</p></div>
+        <div class="window" onclick="openVideoModal('usecase3.webm')" role="button" tabindex="0" aria-label="店舗別の価格を一括登録の動画を拡大"><video src="usecase3.webm" autoplay loop muted playsinline></video></div>
+      </div>
+      <div class="usecase">
+        <div class="usecase-text"><span class="usecase-num">04</span><h3>アイコン画像・詳細画像を一括登録</h3><p>一括登録機能がない画像登録を、スプレッドシート経由で一括登録できます。</p></div>
+        <div class="window" onclick="openVideoModal('usecase4.webm')" role="button" tabindex="0" aria-label="画像を一括登録の動画を拡大"><video src="usecase4.webm" autoplay loop muted playsinline></video></div>
+      </div>
+      <div class="usecase">
+        <div class="usecase-text"><span class="usecase-num">05</span><h3>スプレッドシートから取引登録</h3><p>別チャネルの売上登録や過去売上でご利用いただけます。</p></div>
+        <div class="window" onclick="openVideoModal('usecase5.webm')" role="button" tabindex="0" aria-label="スプレッドシートから取引登録の動画を拡大"><video src="usecase5.webm" autoplay loop muted playsinline></video></div>
+      </div>
     </div>
   </div>
-  <p class="pricing-note">※ 料金はすべて総額表示です。スマレジのスタンダードプラン以上が別途必要です。店舗数に倉庫・休止店舗は含みません。<br>※ ご契約月は契約時点から月末までの料金が初回請求され、翌月以降は毎月月初に当月分の利用料が請求されます。</p>
-</div>
+</section>
 
-<hr class="divider">
+<section class="section" id="how">
+  <div class="container">
+    <div class="sec-head">
+      <h2 class="sec-index"><span class="no">03</span>使い方</h2>
+      <p class="sec-title">3ステップで使い始められます。</p>
+    </div>
+    <div class="steps">
+      <div class="step"><span class="num">STEP 1</span><h3>アドオンをインストール</h3><p>Google Workspaceマーケットプレイスからインストール</p></div>
+      <div class="step"><span class="num">STEP 2</span><h3>スマレジと連携</h3><p>サイドバーからスマレジアカウントでOAuth認証</p></div>
+      <div class="step"><span class="num">STEP 3</span><h3>データを取得</h3><p>取得条件を選んでボタンを押すだけでシートにデータ出力</p></div>
+    </div>
+  </div>
+</section>
 
-<div class="section">
-  <div class="section-label">Cancellation Policy</div>
-  <div class="section-title">キャンセル・返金ポリシー</div>
-  <div class="cancel-box">
-    <h3>🔔 解約・返金について</h3>
-    <ul class="cancel-list">
+<section class="section">
+  <div class="container split">
+    <div class="sec-head">
+      <h2 class="sec-index"><span class="no">04</span>ご利用要件</h2>
+    </div>
+    <dl class="req">
+      <dt>スマレジ</dt><dd>スタンダードプラン以上のご契約が必要です。</dd>
+      <dt>Googleアカウント</dt><dd>Googleアカウントおよびスプレッドシートへのアクセス権が必要です。</dd>
+      <dt>動作環境</dt><dd>Google Chrome 最新版を推奨します。</dd>
+    </dl>
+  </div>
+</section>
+
+<section class="section section-soft" id="pricing">
+  <div class="container">
+    <div class="sec-head">
+      <h2 class="sec-index"><span class="no">05</span>料金プラン</h2>
+      <p class="sec-title">店舗数に合わせて選べる料金プラン</p>
+    </div>
+    <table class="price-table">
+      <thead>
+        <tr><th>プラン</th><th>月額</th><th>店舗数</th><th>実行回数</th><th>入出力行数</th><th></th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="plan-name">Free</td>
+          <td class="price-cell"><span class="plan-price">¥0<small>/月</small></span></td>
+          <td data-label="店舗数">無制限</td>
+          <td data-label="実行回数" class="limit">月10回まで</td>
+          <td data-label="入出力行数" class="limit">1回100行まで（登録系は10行）</td>
+          <td class="note">まずは無料でお試し</td>
+        </tr>
+        <tr>
+          <td class="plan-name">Lite</td>
+          <td class="price-cell"><span class="plan-price">¥980<small>/月</small></span></td>
+          <td data-label="店舗数">1店舗まで</td>
+          <td data-label="実行回数" class="limit">月50回まで</td>
+          <td data-label="入出力行数" class="free">無制限</td>
+          <td class="note">日次・週次の定期確認に最適</td>
+        </tr>
+        <tr class="featured">
+          <td class="plan-name">Standard<span class="tag">おすすめ</span></td>
+          <td class="price-cell"><span class="plan-price">¥2,980<small>/月</small></span></td>
+          <td data-label="店舗数">1店舗まで</td>
+          <td data-label="実行回数" class="free">無制限</td>
+          <td data-label="入出力行数" class="free">無制限</td>
+          <td class="note">月次レポート・分析に最適</td>
+        </tr>
+        <tr>
+          <td class="plan-name">Pro</td>
+          <td class="price-cell"><span class="plan-price">¥4,980<small>/月</small></span></td>
+          <td data-label="店舗数">10店舗まで</td>
+          <td data-label="実行回数" class="free">無制限</td>
+          <td data-label="入出力行数" class="free">無制限</td>
+          <td class="note">複数店舗を横断集計</td>
+        </tr>
+        <tr>
+          <td class="plan-name">Pro 50</td>
+          <td class="price-cell"><span class="plan-price">¥19,800<small>/月</small></span></td>
+          <td data-label="店舗数">50店舗まで</td>
+          <td data-label="実行回数" class="free">無制限</td>
+          <td data-label="入出力行数" class="free">無制限</td>
+          <td class="note">中規模チェーン向け</td>
+        </tr>
+        <tr>
+          <td class="plan-name">Pro 100</td>
+          <td class="price-cell"><span class="plan-price">¥29,800<small>/月</small></span></td>
+          <td data-label="店舗数">100店舗まで</td>
+          <td data-label="実行回数" class="free">無制限</td>
+          <td data-label="入出力行数" class="free">無制限</td>
+          <td class="note">大規模チェーン向け</td>
+        </tr>
+        <tr>
+          <td class="plan-name">Enterprise</td>
+          <td class="price-cell"><span class="plan-price quote">個別見積もり</span></td>
+          <td data-label="店舗数">101店舗以上</td>
+          <td data-label="実行回数" class="free">無制限</td>
+          <td data-label="入出力行数" class="free">無制限</td>
+          <td class="note">大規模・特殊要件はお問い合わせください</td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="pricing-note">※ 料金はすべて総額表示です。スマレジのスタンダードプラン以上が別途必要です。店舗数に倉庫・休止店舗は含みません。<br>※ ご契約月は契約時点から月末までの料金が初回請求され、翌月以降は毎月月初に当月分の利用料が請求されます。</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container split">
+    <div class="sec-head">
+      <h2 class="sec-index"><span class="no">06</span>キャンセル・返金ポリシー</h2>
+      <p class="sec-title">解約・返金について</p>
+    </div>
+    <ol class="policy">
       <li>いつでも解約できます。解約後は当月末（次回更新日）までサービスをご利用いただけます。</li>
       <li>当月末までに解約をすると翌月から課金が停止します。</li>
       <li>スマレジコネクターの契約変更画面からFreeプランに変更（＝解約）してください。</li>
       <li>プランのアップグレードは即時反映され、現プランの月末までの残額マイナスと新プランの月末までの利用料の差額を即時請求します。</li>
       <li>プランのダウングレードは翌月から反映されます（残存期間の返金はありません）。</li>
       <li>デジタルサービスの性質上、原則として返金はお受けしておりません。</li>
-    </ul>
+    </ol>
   </div>
-</div>
+</section>
 
-<hr class="divider">
+<section class="section" id="faq">
+  <div class="container">
+    <div class="sec-head">
+      <h2 class="sec-index"><span class="no">07</span>よくあるご質問</h2>
+    </div>
+    <div class="faq">
+      <div class="faq-item"><div class="faq-q">無料プランから有料プランへの変更はできますか？</div><div class="faq-a">はい、契約情報画面からいつでもアップグレードできます。（現プランの月末までの残額マイナスと新プランの月末までの利用料の差額を即時請求）</div></div>
+      <div class="faq-item"><div class="faq-q">解約はいつでもできますか？</div><div class="faq-a">契約情報画面からいつでも解約可能です。解約後も次回更新日までは利用いただけます。</div></div>
+      <div class="faq-item"><div class="faq-q">スマレジのどのプランに対応していますか？</div><div class="faq-a">スマレジのスタンダードプラン以上が対象です。</div></div>
+      <div class="faq-item"><div class="faq-q">APIキーの入力は必要ですか？</div><div class="faq-a">不要です。OAuth認証を使用しますので、スマレジアカウントと連携するだけでご利用いただけます。</div></div>
+      <div class="faq-item"><div class="faq-q">支払いは何に対応していますか？</div><div class="faq-a">クレジットカードです。</div></div>
+      <div class="faq-item"><div class="faq-q">非対応の機能のリクエストは可能ですか？</div><div class="faq-a">可能です。お問い合わせよりご要望ください。</div></div>
+      <div class="faq-item"><div class="faq-q">利用料の適格請求書（インボイス）の発行には対応していますか？</div><div class="faq-a">対応しておりません。</div></div>
+    </div>
+  </div>
+</section>
 
-<div class="section">
-  <div class="section-label">FAQ</div>
-  <div class="section-title">よくあるご質問</div>
-  <div class="faq-item"><div class="faq-q">無料プランから有料プランへの変更はできますか？</div><div class="faq-a">はい、契約情報画面からいつでもアップグレードできます。（現プランの月末までの残額マイナスと新プランの月末までの利用料の差額を即時請求）</div></div>
-  <div class="faq-item"><div class="faq-q">解約はいつでもできますか？</div><div class="faq-a">契約情報画面からいつでも解約可能です。解約後も次回更新日までは利用いただけます。</div></div>
-  <div class="faq-item"><div class="faq-q">スマレジのどのプランに対応していますか？</div><div class="faq-a">スマレジのスタンダードプラン以上が対象です。</div></div>
-  <div class="faq-item"><div class="faq-q">APIキーの入力は必要ですか？</div><div class="faq-a">不要です。OAuth認証を使用しますので、スマレジアカウントと連携するだけでご利用いただけます。</div></div>
-  <div class="faq-item"><div class="faq-q">支払いは何に対応していますか？</div><div class="faq-a">クレジットカードです。</div></div>
-  <div class="faq-item"><div class="faq-q">非対応の機能のリクエストは可能ですか？</div><div class="faq-a">可能です。お問い合わせよりご要望ください。</div></div>
-  <div class="faq-item"><div class="faq-q">利用料の適格請求書（インボイス）の発行には対応していますか？</div><div class="faq-a">対応しておりません。</div></div>
-</div>
+<section class="contact" id="contact">
+  <div class="container">
+    <div>
+      <h2 class="sec-index"><span class="no">08</span>お問い合わせ</h2>
+      <p class="sec-desc">ご質問・ご要望・不具合のご報告はメールにてお受けしています。（通常3営業日以内にご返信いたします）</p>
+    </div>
+    <a class="btn btn-primary" href="mailto:support@smaregi-connector.com">メールで問い合わせる <span class="arrow">→</span></a>
+  </div>
+</section>
 
-<hr class="divider">
-
-<div class="section">
-  <div class="section-label">Contact</div>
-  <div class="section-title">お問い合わせ</div>
-  <div class="section-desc">ご質問・ご要望・不具合のご報告は<a href="mailto:support@smaregi-connector.com" style="color:#0084cf;font-weight:700;text-decoration:none;">メール</a>にてお受けしています。（通常3営業日以内にご返信いたします）</div>
-</div>
+</main>
 
 <footer class="site-footer">
-  <nav class="footer-nav">
-    <a href="/">トップ</a>
-    <a href="tokusho.html">特定商取引法に基づく表記</a>
-    <a href="privacy.html">プライバシーポリシー</a>
-    <a href="terms.html">利用規約</a>
-  </nav>
-  <p>© 2026 Calm CB Inc.</p>
+  <div class="container">
+    <nav class="footer-nav" aria-label="フッター">
+      <a href="/">トップ</a>
+      <a href="tokusho.html">特定商取引法に基づく表記</a>
+      <a href="privacy.html">プライバシーポリシー</a>
+      <a href="terms.html">利用規約</a>
+    </nav>
+    <p>© 2026 Calm CB Inc.</p>
+  </div>
 </footer>
 
 <div class="video-modal" id="videoModal" onclick="closeVideoModal(event)">
@@ -327,7 +449,10 @@ function closeVideoModal(e){
   var m=document.getElementById('videoModal'), v=document.getElementById('modalVideo');
   m.classList.remove('open'); v.pause(); v.removeAttribute('src'); v.load();
 }
-document.addEventListener('keydown',function(e){ if(e.key==='Escape') closeVideoModal(); });
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape') closeVideoModal();
+  if((e.key==='Enter'||e.key===' ') && e.target.classList && e.target.classList.contains('window')){ e.preventDefault(); e.target.click(); }
+});
 </script>
 
 </body>

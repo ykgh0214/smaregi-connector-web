@@ -7,39 +7,38 @@
 <link rel="canonical" href="https://smaregi-connector.com/tokusho.html">
 <link rel="icon" type="image/png" href="icon.png">
 <link rel="apple-touch-icon" href="icon.png">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
-<style>
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: 'DM Sans', 'Noto Sans JP', sans-serif; color: #1a1d2e; background: #fff; padding: 48px 24px; }
-.wrapper { max-width: 760px; margin: 0 auto; }
-.page-label { font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #0084cf; margin-bottom: 8px; }
-.page-title { font-size: 26px; font-weight: 700; letter-spacing: -0.3px; margin-bottom: 8px; padding-bottom: 20px; border-bottom: 2px solid #0084cf; }
-.page-subtitle { font-size: 13px; color: #6b7280; margin-bottom: 32px; line-height: 1.6; padding-top: 12px; }
-table { width: 100%; border-collapse: collapse; font-size: 14px; }
-tr { border-bottom: 1px solid #e5e7eb; }
-tr:first-child { border-top: 1px solid #e5e7eb; }
-th { width: 28%; text-align: left; padding: 16px 12px; font-weight: 600; color: #374151; vertical-align: top; background: #f8f9fc; font-size: 13px; }
-td { padding: 16px 0 16px 16px; color: #374151; line-height: 1.8; vertical-align: top; font-size: 14px; }
-.sub { font-size: 13px; color: #6b7280; }
-.note { margin-top: 28px; background: #f8f9fc; border-left: 3px solid #0084cf; border-radius: 0 8px 8px 0; padding: 14px 16px; font-size: 13px; color: #6b7280; line-height: 1.7; }
-.site-footer { margin-top: 48px; border-top: 1px solid #e5e7eb; padding-top: 24px; text-align: center; font-size: 13px; color: #6b7280; }
-.site-footer a { color: #0084cf; text-decoration: none; margin: 0 10px; }
-.site-footer p { margin-top: 8px; font-size: 12px; color: #9ca3af; }
-@media (max-width: 540px) {
-  table, thead, tbody, th, td, tr { display: block; }
-  th { width: 100%; padding: 10px 12px 4px; color: #0084cf; font-size: 12px; border-bottom: none; }
-  td { padding: 4px 12px 16px; }
-}
-</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=M+PLUS+1p:wght@500;700;800&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="site.css">
+<link rel="stylesheet" href="legal.css">
 </head>
 <body>
-<div class="wrapper">
+<header class="site-header">
+  <div class="container">
+    <a class="logo" href="/"><img src="icon.png" alt="">スマレジコネクター</a>
+    <nav class="nav" aria-label="サイト内">
+      <a href="/#features">機能</a>
+      <a href="/#usecases">活用方法</a>
+      <a href="/#pricing">料金</a>
+      <a href="/#faq">よくあるご質問</a>
+    </nav>
+    <a class="btn btn-primary" href="/#contact">お問い合わせ</a>
+  </div>
+</header>
 
-  <div class="page-label">Legal</div>
-  <h1 class="page-title">特定商取引法に基づく表記</h1>
-  <p class="page-subtitle">本ページは、特定商取引法および割賦販売法に基づく商取引に関する開示情報を記載しています。</p>
+<main>
+  <section class="page-head">
+    <div class="container">
+      <div class="page-label">Legal</div>
+      <h1 class="page-title">特定商取引法に基づく表記</h1>
+      <p class="page-subtitle">本ページは、特定商取引法および割賦販売法に基づく商取引に関する開示情報を記載しています。</p>
+    </div>
+  </section>
 
-  <table>
+  <div class="container"><div class="legal">
+
+  <table class="spec">
 
     <tr>
       <th>販売業者</th>
@@ -142,17 +141,19 @@ td { padding: 16px 0 16px 16px; color: #374151; line-height: 1.8; vertical-align
     </tr>
 
   </table>
+  </div></div>
+</main>
 
-  <footer class="site-footer">
-    <div>
-      <a href="index.html">ホーム</a>
+<footer class="site-footer">
+  <div class="container">
+    <nav class="footer-nav" aria-label="フッター">
+      <a href="/">トップ</a>
       <a href="tokusho.html">特定商取引法に基づく表記</a>
       <a href="privacy.html">プライバシーポリシー</a>
       <a href="terms.html">利用規約</a>
-    </div>
+    </nav>
     <p>© 2026 Calm CB Inc.</p>
-  </footer>
-
-</div>
+  </div>
+</footer>
 </body>
 </html>
